@@ -6,7 +6,7 @@ from .models import Post
 
 def index(request):
     latest_posts = Post.objects.order_by("-date")[:10]
-    return HttpResponse(", ".join([str(p) for p in latest_posts]))
+    return render(request, "blog/index.html", context={"latest_posts": latest_posts})
 
 
 def view(request, post_id):
