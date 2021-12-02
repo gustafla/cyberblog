@@ -1,4 +1,5 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 
 from .models import Post
 
@@ -11,3 +12,11 @@ def index(request):
 def view(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     return render(request, "blog/view.html", {"post": post})
+
+
+@login_required
+def post(request):
+    if request.method == "POST":
+        return redirect("/blog/")
+
+    return render(request, "blog/post.html")
