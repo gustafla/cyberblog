@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Log in</title>
+  </head>
+  <body>
+    <form method="POST" action="{% url "accounts:login" %}">
+      {% csrf_token %}
+      <label for="username">Username:</label><br />
+      <input type="text" id="username" name="username" /><br />
+      <label for="text">Password:</label><br />
+      <input type="password" id="password" name="password" /><br />
+      <input type="hidden" id="next" name="next" value="{{ next }}" />
+      <input type="submit" value="Log in">
+    </form>
+    {% if invalid %}
+    <p>Login failed. Try again.</p>
+    {% endif %}
+  </body>
+</html>
