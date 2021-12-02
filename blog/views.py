@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+import datetime
 
 from .models import Post
 
@@ -17,6 +18,12 @@ def view(request, post_id):
 @login_required
 def post(request):
     if request.method == "POST":
+        post = Post()
+        post.author = request.user
+        post.title = request.POST.get("title")
+        post.text = request.POST.get("text")
+        post.date = datetime.datetime.now()
+        post.save()
         return redirect("/blog/")
 
     return render(request, "blog/post.html")
