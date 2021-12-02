@@ -1,5 +1,9 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login as django_login
+from django.contrib.auth import (
+    authenticate,
+    login as django_login,
+    logout as django_logout,
+)
 
 
 def login(request):
@@ -16,3 +20,8 @@ def login(request):
     return render(
         request, "accounts/login.html", {"next": request.GET.get("next", "/")}
     )
+
+
+def logout(request):
+    django_logout(request)
+    return redirect("/")
