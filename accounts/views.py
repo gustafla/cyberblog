@@ -7,19 +7,19 @@ from django.contrib.auth import (
 
 
 def login(request):
+    context = {"next": request.GET.get("next", "/")}
     if request.method == "POST":
+        context["next"] = request.POST.get("next", context.get("next", "/"))
         username = request.POST.get("username")
         password = request.POST.get("password")
         user = authenticate(request, username=username, password=password)
         if user:
             django_login(request, user)
-            return redirect(request.POST.get("next", "/"))
+            return redirect(context["next"])
         else:
-            return render(request, "accounts/login.html", {"invalid": True})
+            context["invalid"] = True
 
-    return render(
-        request, "accounts/login.html", {"next": request.GET.get("next", "/")}
-    )
+    return render(request, "accounts/login.html", context)
 
 
 def logout(request):
