@@ -15,13 +15,31 @@ def view(request, post_id):
     return render(request, "blog/view.html", {"post": post})
 
 
+def text2paras(text):
+    output_paras = []
+    output = ""
+
+    for line in text.splitlines():
+        if line.strip():
+            if output:
+                output += "<br />"
+            output += line
+        else:
+            if output:
+                output_paras.append(output)
+                output = ""
+
+    output_paras.append(output)
+    return "".join("<p>" + para + "</p>" for para in output_paras)
+
+
 @login_required
 def post(request):
     if request.method == "POST":
         post = Post()
         post.author = request.user
         post.title = request.POST.get("title")
-        post.text = request.POST.get("text")
+        post.text = text2paras(request.POST.get("text"))
         post.date = datetime.datetime.now()
         post.save()
         return redirect("/blog/")
