@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.clickjacking import xframe_options_exempt
 import datetime
 
 from .models import Post
@@ -34,14 +36,20 @@ def text2paras(text):
 
 
 @login_required
-def post(request):
-    if request.method == "POST":
-        post = Post()
-        post.author = request.user
-        post.title = request.POST.get("title")
-        post.text = text2paras(request.POST.get("text"))
-        post.date = datetime.datetime.now()
-        post.save()
-        return redirect("/blog/")
+@csrf_exempt
+@xframe_options_exempt
+def create_post(request):
+    post = Post()
+    post.author = request.user
+    post.title = request.GET.get("title", "No title")
+    post.text = text2paras(request.GET.get("text", ""))
+    post.date = datetime.datetime.now()
+    post.save()
+    return redirect("/blog/")
 
+
+@login_required
+@csrf_exempt
+@xframe_options_exempt
+def post(request):
     return render(request, "blog/post.html")

@@ -7,7 +7,7 @@
   <body>
     <p>Welcome to cyber security blog site</p>
     {% if user.is_authenticated %}
-    <p>You're logged in as {{ user.get_username }}.</p>
+    <p>You're logged in as {{ user.get_username }}</p>
     <p><a href="{% url "accounts:logout" %}">Log out</a></p>
     <p><a href="{% url "blog:post" %}">Create new post</a></p>
     {% else %}

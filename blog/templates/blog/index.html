@@ -5,6 +5,7 @@
     <title>Blog</title>
   </head>
   <body>
+    <p><a href="{% url "index" %}">To front page</a></p>
     {% if latest_posts %}
       <ul>
       {% for post in latest_posts %}
