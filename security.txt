@@ -41,3 +41,9 @@ Here's an example of what an exploit page could look like:
 This flaw can be fixed by removing the csrf_exempt decorator and adding a
 csrf_token in the form in the post.html -template. Also, a good practice would
 be to only accept new posts to be posted with the POST-method.
+
+FLAW 3:
+
+FLAW 4:
+
+FLAW 5:
