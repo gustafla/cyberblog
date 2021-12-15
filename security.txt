@@ -7,11 +7,14 @@ Cross-site Scripting Vulnerability.
 The blog allows all posts by users to be shown more or less as it was received
 (using the django template safe tag). The application does not manually protect
 against HTML tags, which results in the users who can write posts to be able to
-add <scipt> tags to their posts.
+add <scipt> tags to their posts. Scripts on pages are trusted by browsers, and
+enable attackers to steal session tokens and other cookies, and to arbitrarily
+modify page contents.
 This flaw can be fixed by removing the safe tag from the view.html template.
 Paragraph splits can be safely added by parsing the post text in the view -view
 into a list of paragraphs, and using the template engine's for loop to iterate
-over the list, inserting each paragraph into a <p> element.
+over the list, inserting each paragraph into a <p> element. Also libraries for
+rich text processing and -rendering exist, if more features are desired.
 
 FLAW 2:
 https://github.com/gustafla/cyberblog/blob/master/blog/views.py#L41
@@ -51,14 +54,15 @@ characters, and treats them as case-insensitive. This flaw makes the user
 accounts vulnerable to brute force attacks and the passwords become especially
 compromised if the database gets leaked. The registration and login pages don't
 have protection against brute force attacks. Also users do not have a way to
-change their passwords.
+change their passwords after registration, even if they wanted to improve
+password strength later.
 This can be fixed by changing password requirements to require longer
 passwords, removing the .lower() calls which make the passwords
 case-insensitive, checking the passwords against common password lists, and/or
 by adding mandatory multi-factor authentication. The registration and login
-pages can be protected against bots and brute force attacks by adding counters
-and timeouts, and/or captchas. A page for changing account's passwords should
-be implemented.
+pages can be protected against bots and brute force attacks by adding server
+side attempt counters and timeouts, and/or captchas. A page for changing
+account's passwords should be implemented.
 
 FLAW 4:
 https://github.com/gustafla/cyberblog/blob/master/accounts/views.py#L13
@@ -67,9 +71,12 @@ https://github.com/gustafla/cyberblog/blob/master/blog/views.py#L42
 https://github.com/gustafla/cyberblog/blob/master/blog/views.py#L55
 Misconfigured Security Headers.
 Some pages, such as the registration and login should have the header
-X-Frame-Options configured to disallow embedding on other sites. This could
-potentially lead to user authentication information leaking to attackers, or
-attackers tricking users to write unintended posts.
+X-Frame-Options configured to disallow embedding on other sites. Browsers can
+embed pages on pages, using the <iframe> element for example. This could
+potentially lead to user authentication information leaking to attackers if
+they monitor events on a page which embeds the blog site's pages, or
+attackers tricking users to write unintended posts by giving misleading
+context to an embedded form for writing new posts.
 This can be fixed by removing all the xframe_options_exempt decorators.
 
 FLAW 5:
@@ -77,7 +84,8 @@ https://github.com/gustafla/cyberblog/blob/master/accounts/views.py#L27
 Broken Access Control.
 All users who sign up using the register-form are created as superusers,
 granting them rights to use the /admin pages. This violates the principle of
-least privilege by default.
+least privilege by default, and allows all users to change other users'
+passwords, add posts for any user and time, edit posts, remove posts, etc.
 This can be fixed by creating regular users instead (User.objects.create_user)
 and creating superusers manually by other superusers when deemed necessary.
 
@@ -86,13 +94,18 @@ Security Logging and Monitoring failure.
 The application doesn't log any events at all. Especially security related
 events such as login success and failure, user registration and new posts
 should be logged in sufficient detail for auditing and the logs should ideally
-be sent and stored at multiple different machines.
+be sent and stored at multiple different machines. It's also a good idea to
+add fuzzing/scanning detection in production, and log detected attempts.
 
 FLAW 7:
 https://github.com/gustafla/cyberblog/blob/master/cyberblog/settings.py#L108
 Cryptographic Failure.
 The application is configured to store passwords as unsalted MD5 hashes. This
 is almost as bad as storing the passwords in plaintext, as MD5 is very fast to
-crack and the lack of salt enables use of rainbow tables as well.
+crack and the lack of salt enables use of rainbow tables as well. Rainbow
+tables are a big collection of precomputed hashes for common passwords. MD5 is
+also a flawed hash algorithm, as it is not collision-resistant.
 This can be fixed by removing the PASSWORD_HASHERS setting from settings.py in
-favor of Django's secure default settings for password hashing.
+favor of Django's secure default settings for password hashing. By default,
+Django uses PBKDF2 password stretching algorithm with SHA256 hashing, which is
+recommended by U.S. National Institute of Standards and Technology.
