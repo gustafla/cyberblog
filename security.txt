@@ -58,5 +58,12 @@ registration and login pages can be protected against bots and brute force
 attacks by adding counters and timeouts, and captchas.
 
 FLAW 4:
+https://github.com/gustafla/cyberblog/blob/master/accounts/views.py#L13
+https://github.com/gustafla/cyberblog/blob/master/accounts/views.py#L41
+Misconfigured security headers.
+Some pages, such as the registration and login should have the header
+X-Frame-Options configured to disallow embedding on other sites. This could
+potentially lead to user authentication information leaking to attackers.
+This can be fixed by removing all the xframe_options_exempt decorators.
 
 FLAW 5:

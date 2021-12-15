@@ -7,11 +7,13 @@ import datetime
 from .models import Post
 
 
+@xframe_options_exempt
 def index(request):
     latest_posts = Post.objects.order_by("-date")[:100]
     return render(request, "blog/index.html", context={"latest_posts": latest_posts})
 
 
+@xframe_options_exempt
 def view(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     return render(request, "blog/view.html", {"post": post})
