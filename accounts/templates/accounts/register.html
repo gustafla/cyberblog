@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Sign up</title>
+  </head>
+  <body>
+    <form method="POST" action="{% url "accounts:register" %}">
+      {% csrf_token %}
+      <label for="username">Username:</label><br />
+      <input type="text" id="username" name="username" /><br />
+      <label for="text">Password:</label><br />
+      <input type="password" id="password" name="password" /><br />
+      <label for="text">Re-enter password:</label><br />
+      <input type="password" id="password2" name="password2" /><br />
+      <input type="submit" value="Register">
+    </form>
+    {% if no_match %}
+    <p>Passwords do not match. Try again.</p>
+    {% elif invalid_username %}
+    <p>Username is not available. Try again.</p>
+    {% elif invalid_password %}
+    <p>Password should be 8 or fewer characters and cannot contain special characters. Try again.</p>
+    {% endif %}
+  </body>
+</html>

@@ -12,6 +12,7 @@
     <p><a href="{% url "blog:post" %}">Create new post</a></p>
     {% else %}
     <p><a href="{% url "accounts:login" %}">Log in</a></p>
+    <p><a href="{% url "accounts:register" %}">Sign up</a></p>
     {% endif %}
     <p><a href="{% url "blog:index" %}">View all posts</a></p>
   </body>

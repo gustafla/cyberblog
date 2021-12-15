@@ -4,10 +4,10 @@ FLAW 1:
 https://github.com/gustafla/cyberblog/blob/master/blog/templates/blog/view.html#L11
 https://github.com/gustafla/cyberblog/blob/master/blog/views.py#L28
 Cross-site Scripting Vulnerability.
-By allowing content posted by users (on the blog posts) to be shown as it was
-received (using the django template safe tag), and not manually safeguarding
-against HTML tags, the users who can write posts can add <scipt> tags to their
-posts.
+The blog allows all posts by users to be shown more or less as it was received
+(using the django template safe tag). The application does not manually protect
+against HTML tags, which results in the users who can write posts to be able to
+add <scipt> tags to their posts.
 This flaw can be fixed by removing the safe tag from the view.html template.
 Paragraph splits can be safely added by parsing the post text in the view -view
 into a list of paragraphs, and using the template engine's for loop to iterate
@@ -15,7 +15,7 @@ over the list, inserting each paragraph into a <p> element.
 
 FLAW 2:
 https://github.com/gustafla/cyberblog/blob/master/blog/views.py#L39
-Cross-site Request Forgery
+Cross-site Request Forgery.
 By marking the create_post view with the csrf_exempt decorator, Django does not
 require a CSRF protection cookie. This enables a malicious site to trick the
 user into writing a blog post on the cyberblog site.
@@ -43,6 +43,19 @@ csrf_token in the form in the post.html -template. Also, a good practice would
 be to only accept new posts to be posted with the POST-method.
 
 FLAW 3:
+https://github.com/gustafla/cyberblog/blob/master/accounts/views.py#L18
+https://github.com/gustafla/cyberblog/blob/master/accounts/views.py#L21
+Weak authentication.
+The blog account registration requires passwords to be 8 or fewer alphanumeric
+characters, and treats them as case-insensitive. This flaw makes the user
+accounts vulnerable to brute force attacks and the passwords become especially
+compromised if the database gets leaked. The registration and login pages don't
+have protection against brute force attacks.
+This can be fixed by changing password requirements to require longer
+passwords, removing the .lower() calls which make the passwords
+case-insensitive, and/or by adding mandatory multi-factor authentication. The
+registration and login pages can be protected against bots and brute force
+attacks by adding counters and timeouts, and captchas.
 
 FLAW 4:
 
