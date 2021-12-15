@@ -45,7 +45,7 @@ be to only accept new posts to be posted with the POST-method.
 FLAW 3:
 https://github.com/gustafla/cyberblog/blob/master/accounts/views.py#L18
 https://github.com/gustafla/cyberblog/blob/master/accounts/views.py#L21
-Weak authentication.
+Weak Authentication.
 The blog account registration requires passwords to be 8 or fewer alphanumeric
 characters, and treats them as case-insensitive. This flaw makes the user
 accounts vulnerable to brute force attacks and the passwords become especially
@@ -65,7 +65,7 @@ https://github.com/gustafla/cyberblog/blob/master/accounts/views.py#L13
 https://github.com/gustafla/cyberblog/blob/master/accounts/views.py#L41
 https://github.com/gustafla/cyberblog/blob/master/blog/views.py#L42
 https://github.com/gustafla/cyberblog/blob/master/blog/views.py#L55
-Misconfigured security headers.
+Misconfigured Security Headers.
 Some pages, such as the registration and login should have the header
 X-Frame-Options configured to disallow embedding on other sites. This could
 potentially lead to user authentication information leaking to attackers, or
@@ -80,3 +80,19 @@ granting them rights to use the /admin pages. This violates the principle of
 least privilege by default.
 This can be fixed by creating regular users instead (User.objects.create_user)
 and creating superusers manually by other superusers when deemed necessary.
+
+FLAW 6:
+Security Logging and Monitoring failure.
+The application doesn't log any events at all. Especially security related
+events such as login success and failure, user registration and new posts
+should be logged in sufficient detail for auditing and the logs should ideally
+be sent and stored at multiple different machines.
+
+FLAW 7:
+https://github.com/gustafla/cyberblog/blob/master/cyberblog/settings.py#L108
+Cryptographic Failure.
+The application is configured to store passwords as unsalted MD5 hashes. This
+is almost as bad as storing the passwords in plaintext, as MD5 is very fast to
+crack and the lack of salt enables use of rainbow tables as well.
+This can be fixed by removing the PASSWORD_HASHERS setting from settings.py in
+favor of Django's secure default settings for password hashing.
