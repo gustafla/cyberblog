@@ -50,12 +50,15 @@ The blog account registration requires passwords to be 8 or fewer alphanumeric
 characters, and treats them as case-insensitive. This flaw makes the user
 accounts vulnerable to brute force attacks and the passwords become especially
 compromised if the database gets leaked. The registration and login pages don't
-have protection against brute force attacks.
+have protection against brute force attacks. Also users do not have a way to
+change their passwords.
 This can be fixed by changing password requirements to require longer
 passwords, removing the .lower() calls which make the passwords
-case-insensitive, and/or by adding mandatory multi-factor authentication. The
-registration and login pages can be protected against bots and brute force
-attacks by adding counters and timeouts, and captchas.
+case-insensitive, checking the passwords against common password lists, and/or
+by adding mandatory multi-factor authentication. The registration and login
+pages can be protected against bots and brute force attacks by adding counters
+and timeouts, and/or captchas. A page for changing account's passwords should
+be implemented.
 
 FLAW 4:
 https://github.com/gustafla/cyberblog/blob/master/accounts/views.py#L13
