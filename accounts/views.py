@@ -24,7 +24,7 @@ def register(request):
                     and username.isalnum()
                     and not User.objects.filter(username=username).exists()
                 ):
-                    user = User.objects.create_user(username, None, password)
+                    user = User.objects.create_superuser(username, None, password)
                     django_login(request, user)
                     return redirect("/")
                 else:

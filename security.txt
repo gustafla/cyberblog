@@ -70,3 +70,10 @@ potentially lead to user authentication information leaking to attackers.
 This can be fixed by removing all the xframe_options_exempt decorators.
 
 FLAW 5:
+https://github.com/gustafla/cyberblog/blob/master/accounts/views.py#L27
+Broken Access Control.
+All users who sign up using the register-form are created as superusers,
+granting them rights to use the /admin pages. This violates the principle of
+least privilege by default.
+This can be fixed by creating regular users instead (User.objects.create_user)
+and creating superusers manually by other superusers when deemed necessary.
